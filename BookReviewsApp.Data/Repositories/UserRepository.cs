@@ -70,7 +70,7 @@ namespace BookReviewsApp.Data.Repositories
             return result > 0;
         }
 
-        public async Task<bool> UpdateUser(User user)
+        public async Task<bool> UpdateUser(UserWebInfo user)
         {
             var db = dbConnection();
             var sql = @"
@@ -81,11 +81,12 @@ namespace BookReviewsApp.Data.Repositories
                             photo = @photo
                         WHERE id = @id;
                        ";
-            var result = await db.ExecuteAsync(sql, new { user.id, user.firstName, user.lastName, user.email, user.photo });
+            var id = int.Parse(user.id);
+            var result = await db.ExecuteAsync(sql, new { id, user.firstName, user.lastName, user.email, user.photo });
             return result > 0;
         }
 
-        public async Task<string> LoginUser(string email, string password)
+        public async Task<UserWebInfo> LoginUser(string email, string password)
         {
             var db = dbConnection();
             var sql = @"
@@ -96,9 +97,8 @@ namespace BookReviewsApp.Data.Repositories
             if (foundUser == null) { throw new FileNotFoundException(); }
             if (PasswordHasher.VerifyPassword(password, foundUser.key, foundUser.password))
             {
-                var handler = new JWTCode(foundUser);
-                var info = handler.Encode();
-                return info;
+                UserWebInfo result = new UserWebInfo(foundUser.id.ToString(), foundUser.email, foundUser.lastName, foundUser.firstName, foundUser.photo);
+                return result;
             }
             else throw new FileNotFoundException();
         }

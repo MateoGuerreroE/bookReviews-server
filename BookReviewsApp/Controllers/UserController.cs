@@ -1,6 +1,7 @@
 ﻿using BookReviewsApp.Data.Helpers;
 using BookReviewsApp.Data.Repositories;
 using BookReviewsApp.Model;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -40,7 +41,7 @@ namespace BookReviewsApp.Controllers
         }
         
         [HttpPut]
-        public async Task<IActionResult> UpdateUser([FromBody] User user)
+        public async Task<IActionResult> UpdateUser([FromBody] UserWebInfo user)
         {
             if (user == null) { return BadRequest(); }
             if (!ModelState.IsValid) { return BadRequest(ModelState); }

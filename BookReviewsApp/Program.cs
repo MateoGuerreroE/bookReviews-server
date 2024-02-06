@@ -17,6 +17,8 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 builder.Services.AddScoped<IBookRepository, BookRepository>();
 
+builder.Services.AddCors(p => p.AddPolicy("corspolicy", build => { build.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader(); }));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -27,6 +29,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("corspolicy");
 
 app.UseAuthorization();
 
